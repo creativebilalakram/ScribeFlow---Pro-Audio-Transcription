@@ -1,9 +1,6 @@
 
-import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
-
 /**
- * Transcribes audio using Gemini 3 Pro with advanced reasoning.
- * Adheres to strict @google/genai initialization rules.
+ * Transcribes audio by proxying to the secure server-side API.
  */
 export const transcribeAudio = async (
   base64Audio: string, 
@@ -11,58 +8,31 @@ export const transcribeAudio = async (
   onProgress?: (status: string) => void
 ): Promise<string> => {
   try {
-    if (onProgress) onProgress("Establishing secure neural link...");
+    if (onProgress) onProgress("Establishing secure neural gateway...");
     
-    // Always initialize fresh to ensure latest API key context
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
-
-    const response: GenerateContentResponse = await ai.models.generateContent({
-      model: 'gemini-3-pro-preview',
-      contents: {
-        parts: [
-          {
-            inlineData: {
-              mimeType,
-              data: base64Audio,
-            },
-          },
-          {
-            text: `You are ScribeFlow Intelligence, a world-class professional transcriptionist specializing in high-fidelity semantic capture.
-            
-            Task: Provide a verbatim-accurate, intelligently formatted transcription.
-            
-            Rules:
-            1. ACCURACY: Capture every word exactly as spoken.
-            2. FORMATTING: Use professional paragraph breaks. Ensure logical flow.
-            3. CLEANUP: Remove "um", "uh", "like" (filler words), and false starts unless they provide critical context.
-            4. SPEAKER ID: If multiple speakers are clearly distinguishable, label them (e.g., Speaker 1, Speaker 2).
-            
-            Output: ONLY the transcribed text. Do not add intro or outro.`
-          }
-        ]
+    const response = await fetch('/api/transcribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      config: {
-        temperature: 0,
-        // Using a healthy thinking budget for complex audio reasoning
-        thinkingConfig: { thinkingBudget: 16000 }
-      }
+      body: JSON.stringify({ base64Audio, mimeType }),
     });
 
-    const text = response.text;
-    if (!text) throw new Error("Neural output empty. Transcription failed.");
-    
-    return text.trim();
-  } catch (error: any) {
-    console.error("Transcription Fault:", error);
-    if (error.message?.includes("API_KEY")) {
-      throw new Error("API Authentication failure. Please check your credentials.");
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Neural processing fault detected.");
     }
-    throw new Error(error.message || "Failed to process audio sequence.");
+
+    const data = await response.json();
+    return data.text;
+  } catch (error: any) {
+    console.error("Transcription Gateway Fault:", error);
+    throw new Error(error.message || "Failed to establish neural sequence.");
   }
 };
 
 /**
- * Translates transcriptions using high-fidelity neural translation.
+ * Translates transcriptions using the secure server-side translation endpoint.
  */
 export const translateText = async (
   text: string,
@@ -72,43 +42,23 @@ export const translateText = async (
   try {
     if (onProgress) onProgress(`Synthesizing ${targetLanguage} translation...`);
     
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
-
-    const response: GenerateContentResponse = await ai.models.generateContent({
-      model: 'gemini-3-pro-preview',
-      contents: {
-        parts: [
-          {
-            text: `You are a professional polyglot translator. 
-            
-            Task: Translate the following text into ${targetLanguage}.
-            
-            Standards:
-            1. FLUENCY: Native-level professional tone in ${targetLanguage}.
-            2. FIDELITY: Maintain 100% of the original meaning and nuance.
-            3. STRUCTURE: Preserve all paragraph breaks.
-            
-            Text:
-            """
-            ${text}
-            """
-            
-            Output: ONLY the translation.`
-          }
-        ]
+    const response = await fetch('/api/translate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      config: {
-        temperature: 0.1,
-        thinkingConfig: { thinkingBudget: 4000 }
-      }
+      body: JSON.stringify({ text, targetLanguage }),
     });
 
-    const translated = response.text;
-    if (!translated) throw new Error("Translation synthesis failed.");
-    
-    return translated.trim();
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Translation synthesis failed.");
+    }
+
+    const data = await response.json();
+    return data.translated;
   } catch (error: any) {
-    console.error("Translation Fault:", error);
+    console.error("Translation Gateway Fault:", error);
     throw new Error("Neural translation error. Please retry.");
   }
 };
