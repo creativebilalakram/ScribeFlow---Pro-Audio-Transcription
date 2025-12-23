@@ -6,8 +6,6 @@ import TranscriptionPanel from './components/TranscriptionPanel';
 import { AppStatus, TranscriptionResult, AudioMetadata } from './types';
 import { transcribeAudio, fileToBase64, formatFileSize } from './services/geminiService';
 
-// Define explicit interfaces for ErrorBoundary props and state to fix TS errors
-// Added optional modifier to children to resolve usage site type errors
 interface ErrorBoundaryProps {
   children?: React.ReactNode;
 }
@@ -16,8 +14,6 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-// Simple Error Boundary component for production stability
-// Fix: Moved state initialization outside of constructor to ensure property existence
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { hasError: false };
 
@@ -30,7 +26,6 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   render() {
-    // Fix: Using this.state correctly within class component
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-zinc-50 p-6">
@@ -50,7 +45,6 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
         </div>
       );
     }
-    // Fix: Using this.props correctly to render children
     return this.props.children;
   }
 }
@@ -63,7 +57,6 @@ const AppContent: React.FC = () => {
   const [inputMode, setInputMode] = useState<'upload' | 'record'>('upload');
   const [error, setError] = useState<string | null>(null);
 
-  // Auto-scroll to top when status changes to results
   useEffect(() => {
     if (status === AppStatus.COMPLETED) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -117,7 +110,6 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-[#f8f9fb] relative selection:bg-blue-100 selection:text-blue-900">
-      {/* Background Glows */}
       <div className="fixed top-[-300px] left-[-300px] w-[1000px] h-[1000px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none z-0" />
       <div className="fixed bottom-[-300px] right-[-300px] w-[1000px] h-[1000px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none z-0" />
       
@@ -126,12 +118,12 @@ const AppContent: React.FC = () => {
       <main className="flex-1 w-full max-w-6xl mx-auto px-[13px] sm:px-6 flex flex-col items-center justify-center relative z-10 py-10 sm:py-20">
         {status === AppStatus.IDLE || status === AppStatus.RECORDING || status === AppStatus.PAUSED || status === AppStatus.ERROR ? (
           <div className="w-full flex flex-col items-center gap-10 sm:gap-20 text-center reveal">
-            <div className="space-y-4 sm:space-y-8 max-w-4xl">
+            <div className="space-y-4 sm:space-y-8 w-full max-w-5xl">
               <div className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-1.5 sm:py-2 bg-blue-50 border border-blue-100 rounded-full mx-auto">
                 <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-600 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
                 <span className="text-[9px] sm:text-[11px] font-black text-blue-600 uppercase tracking-[0.2em] sm:tracking-[0.3em]">Agency Intelligence Enabled</span>
               </div>
-              <h2 className="text-5xl xs:text-6xl sm:text-8xl font-black tracking-tight text-zinc-950 leading-[0.9] stagger-1">
+              <h2 className="text-[32px] xs:text-[42px] sm:text-7xl md:text-8xl font-black tracking-tighter text-zinc-950 leading-none stagger-1 whitespace-nowrap">
                 Precision <span className="shimmer-text">Scribe.</span>
               </h2>
               <p className="text-sm sm:text-xl text-zinc-500 font-medium max-w-2xl mx-auto stagger-2 leading-relaxed px-4">
@@ -255,7 +247,6 @@ const AppContent: React.FC = () => {
   );
 };
 
-// Fix: Wrapping AppContent correctly with ErrorBoundary
 const App: React.FC = () => (
   <ErrorBoundary>
     <AppContent />
