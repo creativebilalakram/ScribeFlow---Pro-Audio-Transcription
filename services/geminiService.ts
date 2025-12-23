@@ -1,7 +1,14 @@
 
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Helper to get AI instance lazily
+const getAI = () => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    throw new Error("API_KEY is missing. Please set it in Vercel Environment Variables.");
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 export const transcribeAudio = async (
   base64Audio: string, 
@@ -9,6 +16,7 @@ export const transcribeAudio = async (
   onProgress?: (status: string) => void
 ): Promise<string> => {
   try {
+    const ai = getAI();
     if (onProgress) onProgress("Initializing advanced AI engine...");
 
     const response: GenerateContentResponse = await ai.models.generateContent({
@@ -57,6 +65,7 @@ export const translateText = async (
   onProgress?: (status: string) => void
 ): Promise<string> => {
   try {
+    const ai = getAI();
     if (onProgress) onProgress(`Synthesizing ${targetLanguage} translation...`);
 
     const response: GenerateContentResponse = await ai.models.generateContent({
@@ -83,7 +92,7 @@ export const translateText = async (
         ]
       },
       config: {
-        temperature: 0.1, // Slight creativity for natural phrasing
+        temperature: 0.1,
         thinkingConfig: { thinkingBudget: 2000 }
       }
     });
