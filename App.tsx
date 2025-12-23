@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import Header from './components/Header';
 import RecordingInterface from './components/RecordingInterface';
 import TranscriptionPanel from './components/TranscriptionPanel';
@@ -14,12 +13,12 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-// Fix: Refined ErrorBoundary class to correctly inherit from Component with generics
-// and initialized state properly to resolve the 'props' property error.
+// Fixed: Explicitly using Component with generics and defining the state property to fix TypeScript visibility errors.
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  public state: ErrorBoundaryState = { hasError: false };
+
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(_: any): ErrorBoundaryState {
