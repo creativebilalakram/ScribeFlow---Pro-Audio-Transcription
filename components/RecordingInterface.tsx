@@ -9,8 +9,6 @@ interface Props {
 
 const RecordingInterface: React.FC<Props> = ({ onRecordingComplete, status, setStatus }) => {
   const [seconds, setSeconds] = useState(0);
-  const [micError, setMicError] = useState<string | null>(null);
-  const [isRequesting, setIsRequesting] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<number | null>(null);
@@ -31,7 +29,6 @@ const RecordingInterface: React.FC<Props> = ({ onRecordingComplete, status, setS
       stopRecording();
       return;
     }
-    setIsRequesting(true);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
@@ -45,10 +42,8 @@ const RecordingInterface: React.FC<Props> = ({ onRecordingComplete, status, setS
       };
       recorder.start();
       setStatus(AppStatus.RECORDING);
-      setIsRequesting(false);
     } catch (err) {
-      setMicError("Mic access denied.");
-      setIsRequesting(false);
+      alert("Mic access denied.");
     }
   };
 
@@ -65,10 +60,8 @@ const RecordingInterface: React.FC<Props> = ({ onRecordingComplete, status, setS
   return (
     <div className={`premium-container w-full h-full ${status === AppStatus.RECORDING ? 'active' : ''}`}>
       <div className="inner-content flex flex-col items-center justify-center p-12 gap-10">
-        <div className="flex flex-col items-center gap-2">
-          <div className="text-8xl font-mono font-black tracking-tighter text-zinc-950">
-            {formatTime(seconds)}
-          </div>
+        <div className="text-8xl font-mono font-black text-zinc-950">
+          {formatTime(seconds)}
         </div>
         <button
           onClick={handleMicClick}

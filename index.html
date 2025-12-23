@@ -43,8 +43,6 @@
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @media (min-width: 640px) { .premium-container { border-radius: 48px; padding: 2px; } }
-
         .premium-container::before {
             content: '';
             position: absolute;
@@ -65,10 +63,7 @@
             z-index: 1;
         }
 
-        @media (min-width: 640px) { .premium-container::after { inset: 2px; border-radius: 46px; } }
-
         .inner-content { position: relative; z-index: 2; background: white; border-radius: 30.5px; width: 100%; height: 100%; }
-        @media (min-width: 640px) { .inner-content { border-radius: 46px; } }
 
         @keyframes snake-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
@@ -99,7 +94,7 @@
 }
 </script>
 </head>
-<body class="grain">
+<body class="grain overflow-x-hidden w-full">
     <div id="root"></div>
 </body>
 </html>

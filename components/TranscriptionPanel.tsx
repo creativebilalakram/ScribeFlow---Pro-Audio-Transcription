@@ -9,19 +9,13 @@ interface Props {
 
 const TranscriptionPanel: React.FC<Props> = ({ result, onClose }) => {
   const [editableText, setEditableText] = useState(result.text);
-  const [isTranslating, setIsTranslating] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(editableText);
-    alert("Copied!");
-  };
 
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col gap-8 reveal">
       <div className="flex justify-between items-center bg-white p-7 border border-zinc-100 rounded-3xl shadow-sm">
         <h3 className="text-lg font-black">{result.fileName}</h3>
         <div className="flex gap-3">
-          <button onClick={handleCopy} className="px-6 py-3 bg-zinc-50 rounded-2xl font-black text-[12px] uppercase">Copy</button>
+          <button onClick={() => navigator.clipboard.writeText(editableText)} className="px-6 py-3 bg-zinc-50 rounded-2xl font-black text-[12px] uppercase">Copy</button>
           <button onClick={onClose} className="px-6 py-3 bg-zinc-950 text-white rounded-2xl font-black text-[12px] uppercase">Return</button>
         </div>
       </div>

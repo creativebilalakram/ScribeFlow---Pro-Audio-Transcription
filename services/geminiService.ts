@@ -1,10 +1,5 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
-const getAIClient = () => {
-  const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : '';
-  return new GoogleGenAI({ apiKey: apiKey || '' });
-};
-
 export const transcribeAudio = async (
   base64Audio: string, 
   mimeType: string,
@@ -12,7 +7,7 @@ export const transcribeAudio = async (
 ): Promise<string> => {
   try {
     if (onProgress) onProgress("Initializing advanced AI engine...");
-    const ai = getAIClient();
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
     const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-pro-preview',
@@ -25,16 +20,7 @@ export const transcribeAudio = async (
             },
           },
           {
-            text: `You are a world-class professional transcriptionist. 
-            
-            Task: Provide a high-fidelity, verbatim-accurate transcription of the provided audio.
-            
-            Quality Standards:
-            1. WORD-FOR-WORD ACCURACY: Ensure every spoken word is captured correctly.
-            2. INTELLIGENT CLEANUP: Clean verbatim. Remove filler words (um, uh) and false starts.
-            3. LOGICAL FORMATTING: Organize into paragraphs.
-            
-            Constraint: Output ONLY the final transcribed text.`
+            text: `You are a world-class professional transcriptionist. Provide a high-fidelity, verbatim-accurate transcription. Organized into paragraphs. Output ONLY the text.`
           }
         ]
       },
@@ -44,10 +30,7 @@ export const transcribeAudio = async (
       }
     });
 
-    const text = response.text;
-    if (!text) throw new Error("No transcription was generated.");
-    
-    return text.trim();
+    return response.text?.trim() || "No transcription generated.";
   } catch (error: any) {
     console.error("Transcription error:", error);
     throw new Error(error.message || "Failed to transcribe audio.");
@@ -61,28 +44,14 @@ export const translateText = async (
 ): Promise<string> => {
   try {
     if (onProgress) onProgress(`Synthesizing ${targetLanguage} translation...`);
-    const ai = getAIClient();
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
     const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-pro-preview',
       contents: {
         parts: [
           {
-            text: `You are a professional polyglot translator. 
-            
-            Task: Translate the following text into ${targetLanguage}.
-            
-            Standards:
-            1. FLUENCY: Ensure the translation sounds natural and professional in ${targetLanguage}.
-            2. CONTEXT: Maintain the original tone and nuances of the speaker.
-            3. FORMATTING: Preserve the paragraph structure and line breaks.
-            
-            Original Text:
-            """
-            ${text}
-            """
-            
-            Output ONLY the ${targetLanguage} translation.`
+            text: `Translate the following text into ${targetLanguage}. Output ONLY the translation.\n\n${text}`
           }
         ]
       },
@@ -92,13 +61,10 @@ export const translateText = async (
       }
     });
 
-    const translated = response.text;
-    if (!translated) throw new Error("Translation failed.");
-    
-    return translated.trim();
+    return response.text?.trim() || "Translation failed.";
   } catch (error: any) {
     console.error("Translation error:", error);
-    throw new Error("Neural translation fault. Please try again.");
+    throw new Error("Neural translation fault.");
   }
 };
 
