@@ -3,56 +3,39 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import RecordingInterface from './components/RecordingInterface';
 import TranscriptionPanel from './components/TranscriptionPanel';
-import { AppStatus, TranscriptionResult, AudioMetadata } from './types';
-import { transcribeAudio, fileToBase64, formatFileSize } from './services/geminiService';
+import { AppStatus, TranscriptionResult } from './types';
+import { transcribeAudio, fileToBase64 } from './services/geminiService';
 
-// Define explicit interfaces for ErrorBoundary props and state to fix TS errors
-interface ErrorBoundaryProps {
-  children: React.ReactNode;
-}
+// Error Boundary for stability
+interface ErrorBoundaryProps { children?: React.ReactNode; }
+interface ErrorBoundaryState { hasError: boolean; }
 
-interface ErrorBoundaryState {
-  hasError: boolean;
-}
-
-// Simple Error Boundary component for production stability
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  // Added constructor to properly initialize class and satisfy TypeScript context for this.props
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    // Properly initialize state
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
+  static getDerivedStateFromError(_: any): ErrorBoundaryState { return { hasError: true }; }
+  
   componentDidCatch(error: any, errorInfo: any) {
-    console.error("ScribeFlow Runtime Error:", error, errorInfo);
+    console.error("ErrorBoundary caught an error", error, errorInfo);
   }
 
   render() {
-    // Correctly access state through this.state
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-zinc-50 p-6">
-          <div className="max-w-md w-full text-center space-y-6">
-            <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-            </div>
-            <h1 className="text-2xl font-black text-zinc-950">System Instability Detected</h1>
-            <p className="text-zinc-500 font-medium">An unexpected error occurred in the ScribeFlow core. Please refresh to restore operations.</p>
-            <button 
-              onClick={() => window.location.reload()}
-              className="px-8 py-3 bg-zinc-950 text-white font-black rounded-2xl shadow-xl hover:bg-zinc-800 transition-all active:scale-95"
-            >
-              Restart ScribeFlow
-            </button>
+        <div className="min-h-screen flex items-center justify-center bg-zinc-50 p-6 text-center">
+          <div className="max-w-md space-y-4">
+            <h1 className="text-2xl font-black text-zinc-950">System Fault</h1>
+            <p className="text-zinc-500 font-medium">Neural core restart required to restore operations.</p>
+            <button onClick={() => window.location.reload()} className="px-8 py-3 bg-zinc-950 text-white font-black rounded-2xl shadow-xl hover:bg-zinc-800 transition-all active:scale-95">Restart ScribeFlow</button>
           </div>
         </div>
       );
     }
-    // Correctly access props through this.props
+    // Fixed: Properly accessing children from props
     return this.props.children;
   }
 }
@@ -61,16 +44,8 @@ const AppContent: React.FC = () => {
   const [status, setStatus] = useState<AppStatus>(AppStatus.IDLE);
   const [progressMsg, setProgressMsg] = useState<string>('');
   const [result, setResult] = useState<TranscriptionResult | null>(null);
-  const [meta, setMeta] = useState<AudioMetadata | null>(null);
   const [inputMode, setInputMode] = useState<'upload' | 'record'>('upload');
   const [error, setError] = useState<string | null>(null);
-
-  // Auto-scroll to top when status changes to results
-  useEffect(() => {
-    if (status === AppStatus.COMPLETED) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [status]);
 
   const processAudio = async (blob: Blob, name: string) => {
     try {
@@ -81,7 +56,6 @@ const AppContent: React.FC = () => {
       const base64 = await fileToBase64(blob);
       const mimeType = blob.type.includes('webm') ? 'audio/webm' : blob.type;
       
-      setMeta({ name, size: formatFileSize(blob.size), type: mimeType });
       setStatus(AppStatus.PROCESSING);
       setProgressMsg("Isolating semantic intent...");
       
@@ -112,17 +86,13 @@ const AppContent: React.FC = () => {
   const reset = () => {
     setStatus(AppStatus.IDLE);
     setResult(null);
-    setMeta(null);
     setError(null);
     setProgressMsg('');
   };
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-[#f8f9fb] relative selection:bg-blue-100 selection:text-blue-900">
-      {/* Background Glows */}
       <div className="fixed top-[-300px] left-[-300px] w-[1000px] h-[1000px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none z-0" />
-      <div className="fixed bottom-[-300px] right-[-300px] w-[1000px] h-[1000px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none z-0" />
-      
       <Header onLogoClick={reset} />
       
       <main className="flex-1 w-full max-w-6xl mx-auto px-[13px] sm:px-6 flex flex-col items-center justify-center relative z-10 py-10 sm:py-20">
@@ -131,17 +101,17 @@ const AppContent: React.FC = () => {
             <div className="space-y-4 sm:space-y-8 max-w-4xl">
               <div className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-1.5 sm:py-2 bg-blue-50 border border-blue-100 rounded-full mx-auto">
                 <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-600 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-                <span className="text-[9px] sm:text-[11px] font-black text-blue-600 uppercase tracking-[0.2em] sm:tracking-[0.3em]">Agency Intelligence Enabled</span>
+                <span className="text-[9px] sm:text-[11px] font-black text-blue-600 uppercase tracking-[0.2em] sm:tracking-[0.3em]">Neural Link Encrypted</span>
               </div>
-              <h2 className="text-5xl xs:text-6xl sm:text-8xl font-black tracking-tight text-zinc-950 leading-[0.9] stagger-1">
+              <h2 className="text-5xl xs:text-6xl sm:text-8xl font-black tracking-tight text-zinc-950 leading-[0.9]">
                 Precision <span className="shimmer-text">Scribe.</span>
               </h2>
-              <p className="text-sm sm:text-xl text-zinc-500 font-medium max-w-2xl mx-auto stagger-2 leading-relaxed px-4">
+              <p className="text-sm sm:text-xl text-zinc-500 font-medium max-w-2xl mx-auto leading-relaxed px-4">
                 Professional-grade audio intelligence engineered for elite performance by <span className="text-zinc-950 font-black border-b-2 border-blue-100/50">Creative Bilal Agency</span>.
               </p>
             </div>
 
-            <div className="w-full max-w-3xl flex flex-col items-center gap-8 sm:gap-12 stagger-3">
+            <div className="w-full max-w-3xl flex flex-col items-center gap-8 sm:gap-12">
               <div className="relative inline-flex p-1 bg-white shadow-xl shadow-zinc-200/40 rounded-[18px] sm:rounded-[24px] border border-zinc-100">
                 <div 
                   className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-zinc-950 rounded-[14px] sm:rounded-[20px] shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
@@ -157,14 +127,10 @@ const AppContent: React.FC = () => {
                   <label className="premium-container block cursor-pointer w-full group h-[340px] sm:h-[480px]">
                     <input type="file" accept="audio/*" onChange={handleFileUpload} className="hidden" />
                     <div className="inner-content flex flex-col items-center justify-center gap-6 sm:gap-10 p-8">
-                      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(90deg, #000 1.5px, transparent 1.5px), linear-gradient(#000 1.5px, transparent 1.5px)', backgroundSize: '48px 48px' }} />
-                      <div className="relative w-20 h-20 sm:w-28 sm:h-28">
-                        <div className="absolute inset-0 bg-blue-600/10 rounded-full blur-2xl group-hover:bg-blue-600/20 transition-all duration-700 group-hover:scale-150" />
-                        <div className="relative w-full h-full bg-white border border-zinc-100 rounded-[28px] sm:rounded-[36px] flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2 group-hover:bg-zinc-950 overflow-hidden">
-                          <svg className="w-10 h-10 sm:w-14 sm:h-14 text-zinc-400 group-hover:text-white transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-20 h-20 sm:w-28 sm:h-28 bg-white border border-zinc-100 rounded-[28px] sm:rounded-[36px] flex items-center justify-center shadow-xl group-hover:bg-zinc-950 group-hover:text-white transition-all duration-500 group-hover:-translate-y-2 overflow-hidden">
+                        <svg className="w-10 h-10 sm:w-14 sm:h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                          </svg>
-                        </div>
+                        </svg>
                       </div>
                       <div className="space-y-2">
                         <p className="text-xl sm:text-2xl font-black text-zinc-950 tracking-tight">Initialize Sequence</p>
@@ -186,22 +152,6 @@ const AppContent: React.FC = () => {
                 {error}
               </div>
             )}
-
-            <div className="w-full max-w-6xl mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8 text-left stagger-3 border-t border-zinc-100 pt-16">
-              {[
-                { title: "Verbatim Proof", desc: "Gemini 3 Pro precision for world-class spoken word capture.", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
-                { title: "Neural Cleanup", desc: "Advanced noise removal and semantic logic for pristine output.", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
-                { title: "Agency Standards", desc: "High-end enterprise grade workflows and encrypted security.", icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" }
-              ].map((item, i) => (
-                <div key={i} className="group p-8 rounded-[40px] bg-white/40 backdrop-blur-sm border border-white hover:bg-white hover:shadow-2xl hover:border-zinc-100 transition-all duration-500 shadow-sm flex flex-col items-start text-left">
-                  <div className="w-12 h-12 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover:bg-zinc-950 group-hover:text-white transition-all mb-6">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d={item.icon}/></svg>
-                  </div>
-                  <h4 className="text-[14px] font-black text-zinc-950 tracking-tight uppercase mb-2">{item.title}</h4>
-                  <p className="text-[11px] text-zinc-500 font-medium leading-relaxed max-w-[240px]">{item.desc}</p>
-                </div>
-              ))}
-            </div>
           </div>
         ) : (status === AppStatus.UPLOADING || status === AppStatus.PROCESSING) ? (
           <div className="w-full max-w-xl flex flex-col items-center gap-12 text-center reveal">
@@ -226,33 +176,6 @@ const AppContent: React.FC = () => {
           </div>
         ) : null}
       </main>
-
-      <footer className="w-full mt-auto px-[13px] sm:px-6 z-10">
-        <div className="max-w-6xl mx-auto flex flex-col items-center gap-6 py-8 sm:py-10 bg-white/40 backdrop-blur-sm border-t border-l border-r border-white/50 rounded-t-[32px] sm:rounded-t-[40px] px-6 sm:px-12">
-          <div className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex flex-col items-center md:items-start gap-1">
-              <div className="flex items-center gap-2">
-                <div className="w-5 h-5 bg-zinc-950 rounded-md flex items-center justify-center shadow-lg shadow-zinc-200">
-                   <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
-                </div>
-                <span className="text-[12px] font-black text-zinc-950 uppercase tracking-[0.2em]">ScribeFlow Elite</span>
-              </div>
-              <p className="text-[9px] sm:text-[10px] text-zinc-400 font-bold uppercase tracking-[0.1em] text-center md:text-left">© {new Date().getFullYear()} Creative Bilal Agency. World-Class AI Standards.</p>
-            </div>
-            
-            <div className="flex items-center gap-8 sm:gap-10">
-               <a href="https://creativebilal.com/portfolio/" target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-1">
-                 <span className="text-[10px] font-black text-zinc-400 group-hover:text-zinc-950 uppercase tracking-[0.2em] transition-colors">Portfolio</span>
-                 <span className="w-0 h-[2px] bg-blue-600 transition-all duration-300 group-hover:w-full rounded-full" />
-               </a>
-               <a href="https://creativebilal.com/contact/" target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-1">
-                 <span className="text-[10px] font-black text-zinc-400 group-hover:text-zinc-950 uppercase tracking-[0.2em] transition-colors">Hire Bilal</span>
-                 <span className="w-0 h-[2px] bg-blue-600 transition-all duration-300 group-hover:w-full rounded-full" />
-               </a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
