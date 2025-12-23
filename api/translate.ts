@@ -51,7 +51,7 @@ export default async function handler(req: any, res: any) {
         },
         config: {
           temperature: 0.1,
-          ...(modelName.includes('pro') || modelName.includes('3') ? { thinkingConfig: { thinkingBudget: 4000 } } : {})
+          // thinkingConfig removed to allow model default behavior
         }
       });
 

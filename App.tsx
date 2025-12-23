@@ -14,14 +14,17 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-// Fixed ErrorBoundary class to correctly inherit and recognize props
+// Fixed ErrorBoundary class to correctly inherit and recognize props and state
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  // Explicitly initialize state as a class field to ensure proper typing of 'this.state'
+  public state: ErrorBoundaryState = { hasError: false };
+
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError() {
+  static getDerivedStateFromError(_: any): ErrorBoundaryState {
+    // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
 
@@ -30,6 +33,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   render() {
+    // Correctly accessing 'this.state' and 'this.props' which are now recognized by TS
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-zinc-50 p-6">
