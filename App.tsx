@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import RecordingInterface from './components/RecordingInterface';
@@ -110,8 +109,9 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-[#f8f9fb] relative selection:bg-blue-100 selection:text-blue-900">
-      <div className="fixed top-[-300px] left-[-300px] w-[1000px] h-[1000px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none z-0" />
-      <div className="fixed bottom-[-300px] right-[-300px] w-[1000px] h-[1000px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none z-0" />
+      {/* Changed z-index to -5 to prevent blocking browser permission prompts */}
+      <div className="fixed top-[-300px] left-[-300px] w-[1000px] h-[1000px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none z-[-5]" />
+      <div className="fixed bottom-[-300px] right-[-300px] w-[1000px] h-[1000px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none z-[-5]" />
       
       <Header onLogoClick={reset} />
       
