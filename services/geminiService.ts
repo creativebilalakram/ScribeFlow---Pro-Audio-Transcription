@@ -1,7 +1,15 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
-const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : '';
-const ai = new GoogleGenAI({ apiKey: apiKey || '' });
+// We'll initialize the AI client inside the functions to ensure process.env is available
+let aiClient: GoogleGenAI | null = null;
+
+const getAIClient = () => {
+  if (!aiClient) {
+    const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : '';
+    aiClient = new GoogleGenAI({ apiKey: apiKey || '' });
+  }
+  return aiClient;
+};
 
 export const transcribeAudio = async (
   base64Audio: string, 
@@ -10,6 +18,7 @@ export const transcribeAudio = async (
 ): Promise<string> => {
   try {
     if (onProgress) onProgress("Initializing advanced AI engine...");
+    const ai = getAIClient();
 
     const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-pro-preview',
@@ -58,6 +67,7 @@ export const translateText = async (
 ): Promise<string> => {
   try {
     if (onProgress) onProgress(`Synthesizing ${targetLanguage} translation...`);
+    const ai = getAIClient();
 
     const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-pro-preview',
