@@ -115,15 +115,15 @@ const AppContent: React.FC = () => {
       
       <Header onLogoClick={reset} />
       
-      <main className="flex-1 w-full max-w-6xl mx-auto px-[13px] sm:px-6 flex flex-col items-center justify-center relative z-10 py-10 sm:py-20">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-[13px] sm:px-6 flex flex-col items-center justify-center relative z-10 py-10 sm:py-20">
         {status === AppStatus.IDLE || status === AppStatus.RECORDING || status === AppStatus.PAUSED || status === AppStatus.ERROR ? (
-          <div className="w-full flex flex-col items-center gap-10 sm:gap-20 text-center reveal">
-            <div className="space-y-4 sm:space-y-8 w-full max-w-5xl">
-              <div className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-1.5 sm:py-2 bg-blue-50 border border-blue-100 rounded-full mx-auto">
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-600 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-                <span className="text-[9px] sm:text-[11px] font-black text-blue-600 uppercase tracking-[0.2em] sm:tracking-[0.3em]">Agency Intelligence Enabled</span>
+          <div className="w-full flex flex-col items-center gap-10 sm:gap-16 text-center reveal">
+            <div className="space-y-3 sm:space-y-4 w-full">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:py-1 bg-blue-50/60 border border-blue-100/50 rounded-full mx-auto">
+                <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-blue-600 animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                <span className="text-[7px] sm:text-[9px] font-black text-blue-600 uppercase tracking-[0.12em] sm:tracking-[0.15em]">Agency Intelligence Enabled</span>
               </div>
-              <h2 className="text-[32px] xs:text-[42px] sm:text-7xl md:text-8xl font-black tracking-tighter text-zinc-950 leading-none stagger-1 whitespace-nowrap">
+              <h2 className="text-[38px] xs:text-[48px] sm:text-[8vw] md:text-[10vw] lg:text-[145px] font-black tracking-tighter text-zinc-950 leading-[0.9] stagger-1 whitespace-nowrap overflow-hidden py-2">
                 Precision <span className="shimmer-text">Scribe.</span>
               </h2>
               <p className="text-sm sm:text-xl text-zinc-500 font-medium max-w-2xl mx-auto stagger-2 leading-relaxed px-4">
