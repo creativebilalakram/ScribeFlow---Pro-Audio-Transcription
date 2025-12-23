@@ -1,11 +1,13 @@
 
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
-// Helper to get AI instance lazily
+// Helper to get AI instance safely
 const getAI = () => {
-  const apiKey = process.env.API_KEY;
-  if (!apiKey) {
-    throw new Error("API_KEY is missing. Please set it in Vercel Environment Variables.");
+  // Use a variety of ways to find the API Key to avoid 'process undefined' issues
+  const apiKey = (window as any).process?.env?.API_KEY || (process as any)?.env?.API_KEY;
+  
+  if (!apiKey || apiKey === "") {
+    throw new Error("API_KEY_MISSING: Please configure the API_KEY in Vercel settings and redeploy.");
   }
   return new GoogleGenAI({ apiKey });
 };
