@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import RecordingInterface from './components/RecordingInterface';
@@ -13,8 +14,12 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
+// Fixed ErrorBoundary class to correctly inherit and recognize props
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  state: ErrorBoundaryState = { hasError: false };
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
 
   static getDerivedStateFromError() {
     return { hasError: true };
@@ -109,9 +114,8 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-[#f8f9fb] relative selection:bg-blue-100 selection:text-blue-900">
-      {/* Changed z-index to -5 to prevent blocking browser permission prompts */}
-      <div className="fixed top-[-300px] left-[-300px] w-[1000px] h-[1000px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none z-[-5]" />
-      <div className="fixed bottom-[-300px] right-[-300px] w-[1000px] h-[1000px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none z-[-5]" />
+      <div className="fixed top-[-300px] left-[-300px] w-[1000px] h-[1000px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="fixed bottom-[-300px] right-[-300px] w-[1000px] h-[1000px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none z-0" />
       
       <Header onLogoClick={reset} />
       
@@ -123,7 +127,7 @@ const AppContent: React.FC = () => {
                 <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-blue-600 animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
                 <span className="text-[7px] sm:text-[9px] font-black text-blue-600 uppercase tracking-[0.12em] sm:tracking-[0.15em]">Agency Intelligence Enabled</span>
               </div>
-              <h2 className="text-[38px] xs:text-[48px] sm:text-[8vw] md:text-[10vw] lg:text-[145px] font-black tracking-tighter text-zinc-950 leading-[0.9] stagger-1 whitespace-nowrap overflow-hidden py-2">
+              <h2 className="text-[38px] xs:text-[48px] sm:text-[8vw] md:text-[10vw] lg:text-[110px] font-black tracking-tighter text-zinc-950 leading-[0.9] stagger-1 whitespace-nowrap overflow-hidden py-2">
                 Precision <span className="shimmer-text">Scribe.</span>
               </h2>
               <p className="text-sm sm:text-xl text-zinc-500 font-medium max-w-2xl mx-auto stagger-2 leading-relaxed px-4">

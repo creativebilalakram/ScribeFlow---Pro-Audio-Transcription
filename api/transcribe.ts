@@ -23,7 +23,8 @@ export default async function handler(req: any, res: any) {
   for (const modelName of MODELS_PRIORITY) {
     try {
       console.log(`ScribeFlow: Attempting transcription with ${modelName}`);
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+      // Initializing AI with apiKey directly from process.env.API_KEY
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
       const response = await ai.models.generateContent({
         model: modelName,
