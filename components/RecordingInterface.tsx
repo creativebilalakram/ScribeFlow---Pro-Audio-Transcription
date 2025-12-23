@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { AppStatus } from '../types';
 
@@ -95,13 +96,13 @@ const RecordingInterface: React.FC<Props> = ({ onRecordingComplete, status, setS
   return (
     <div className={`premium-container w-full h-full ${status === AppStatus.RECORDING || isRequesting ? 'active' : ''}`}>
       <div className="inner-content flex flex-col items-center justify-center p-6 sm:p-12 gap-8 sm:gap-10">
-        <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }} />
+        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }} />
         
         <div className="flex flex-col items-center gap-2">
-          <div className={`px-4 py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${isRequesting ? 'bg-blue-600 text-white animate-pulse' : 'bg-zinc-50 text-zinc-400 border border-zinc-100'}`}>
+          <div className={`px-4 py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${isRequesting ? 'bg-blue-600 text-white animate-pulse' : 'bg-zinc-50 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-500 border border-zinc-100 dark:border-zinc-700'}`}>
             {isRequesting ? 'Requesting Access' : status === AppStatus.RECORDING ? 'Sequence Live' : 'System Standby'}
           </div>
-          <div className={`text-6xl sm:text-8xl font-mono font-black tracking-tighter transition-all duration-700 ${status === AppStatus.RECORDING ? 'text-zinc-950 scale-105 sm:scale-110' : 'text-zinc-200'}`}>
+          <div className={`text-6xl sm:text-8xl font-mono font-black tracking-tighter transition-all duration-700 ${status === AppStatus.RECORDING ? 'text-zinc-950 dark:text-white scale-105 sm:scale-110' : 'text-zinc-200 dark:text-zinc-800'}`}>
             {formatTime(seconds)}
           </div>
         </div>
@@ -112,8 +113,8 @@ const RecordingInterface: React.FC<Props> = ({ onRecordingComplete, status, setS
             disabled={isRequesting}
             className={`w-20 h-20 sm:w-28 sm:h-28 rounded-full flex items-center justify-center transition-all duration-500 shadow-2xl relative group ${
               status === AppStatus.RECORDING 
-              ? 'bg-zinc-950 text-white shadow-zinc-300' 
-              : 'bg-blue-600 text-white shadow-blue-200 hover:scale-110'
+              ? 'bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 shadow-zinc-300 dark:shadow-none' 
+              : 'bg-blue-600 text-white shadow-blue-200 dark:shadow-none hover:scale-110'
             } ${isRequesting ? 'opacity-50 scale-95' : ''}`}
           >
             {status === AppStatus.IDLE || isRequesting ? (
@@ -124,25 +125,25 @@ const RecordingInterface: React.FC<Props> = ({ onRecordingComplete, status, setS
                 </svg>
               </>
             ) : (
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-lg sm:rounded-xl transition-all duration-300 group-hover:rotate-90" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white dark:bg-zinc-950 rounded-lg sm:rounded-xl transition-all duration-300 group-hover:rotate-90" />
             )}
           </button>
           
           {isRequesting && (
             <div className="absolute top-full mt-6 left-1/2 -translate-x-1/2 w-max text-center space-y-1 sm:space-y-2 animate-in fade-in slide-in-from-top-2">
-              <p className="text-[9px] sm:text-[11px] font-black text-zinc-950 uppercase tracking-widest">Please allow access</p>
-              <p className="text-[8px] sm:text-[10px] text-zinc-400 font-medium">Click "Allow" in your browser</p>
+              <p className="text-[9px] sm:text-[11px] font-black text-zinc-950 dark:text-white uppercase tracking-widest">Please allow access</p>
+              <p className="text-[8px] sm:text-[10px] text-zinc-400 dark:text-zinc-500 font-medium">Click "Allow" in your browser</p>
             </div>
           )}
           
           {micError && (
             <div className="absolute top-full mt-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-in zoom-in-95 duration-300">
-               <p className="text-[9px] sm:text-[10px] text-red-500 font-black uppercase w-max bg-red-50 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-red-100 shadow-xl">
+               <p className="text-[9px] sm:text-[10px] text-red-500 dark:text-red-400 font-black uppercase w-max bg-red-50 dark:bg-red-900/10 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-red-100 dark:border-red-900/20 shadow-xl dark:shadow-none">
                  {micError}
                </p>
                <button 
                  onClick={() => setMicError(null)}
-                 className="text-[8px] sm:text-[9px] font-black text-zinc-400 uppercase tracking-widest hover:text-zinc-600 transition-colors"
+                 className="text-[8px] sm:text-[9px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
                >
                  Dismiss
                </button>
@@ -151,7 +152,7 @@ const RecordingInterface: React.FC<Props> = ({ onRecordingComplete, status, setS
         </div>
 
         <div className="text-center pt-4 sm:pt-8">
-          <p className="text-[8px] sm:text-[10px] font-black text-zinc-300 uppercase tracking-[0.3em]">Encrypted Session • Agency v3.0</p>
+          <p className="text-[8px] sm:text-[10px] font-black text-zinc-300 dark:text-zinc-700 uppercase tracking-[0.3em]">Encrypted Session • Agency v3.0</p>
         </div>
       </div>
     </div>

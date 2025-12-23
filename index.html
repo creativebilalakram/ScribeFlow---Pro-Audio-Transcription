@@ -30,6 +30,20 @@
     <meta property="twitter:image" content="https://creativebilal.com/wp-content/uploads/2025/12/Black-Blue-Minimalist-Modern-Initial-Font-Logo.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        zinc: {
+                            950: '#09090b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -46,6 +60,12 @@
             color: var(--zinc-deep);
             overflow-x: hidden;
             width: 100%;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        .dark body {
+            background-color: #09090b;
+            color: #f8f9fb;
         }
         
         /* Premium Grain Overlay */
@@ -57,6 +77,10 @@
             z-index: 9999;
             opacity: 0.03;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .dark .grain::before {
+            opacity: 0.05;
         }
 
         /* The Premium Container with Ultra-Deep Shadow & Snake Effect */
@@ -73,6 +97,14 @@
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        .dark .premium-container {
+            background: #18181b;
+            box-shadow: 
+                0 0 1px rgba(255,255,255,0.05),
+                0 10px 20px -5px rgba(0,0,0,0.3),
+                0 40px 80px -20px rgba(0,0,0,0.5);
+        }
+
         @media (min-width: 640px) {
             .premium-container {
                 border-radius: 48px;
@@ -86,6 +118,13 @@
                 0 0 2px rgba(59, 130, 246, 0.2),
                 0 20px 40px -10px rgba(0,0,0,0.06),
                 0 60px 120px -30px rgba(0,0,0,0.12);
+        }
+
+        .dark .premium-container:hover {
+             box-shadow: 
+                0 0 2px rgba(59, 130, 246, 0.4),
+                0 20px 40px -10px rgba(0,0,0,0.4),
+                0 60px 120px -30px rgba(0,0,0,0.6);
         }
 
         /* Refined Snake Border */
@@ -122,6 +161,11 @@
             background: white;
             border-radius: 30.5px;
             z-index: 1;
+            transition: background-color 0.5s ease;
+        }
+
+        .dark .premium-container::after {
+            background: #09090b;
         }
 
         @media (min-width: 640px) {
@@ -134,7 +178,7 @@
         .inner-content {
             position: relative;
             z-index: 2;
-            background: white;
+            background: transparent;
             border-radius: 30.5px;
             width: 100%;
             height: 100%;
@@ -158,6 +202,12 @@
             -webkit-text-fill-color: transparent;
             animation: shimmer 4s linear infinite;
         }
+        
+        .dark .shimmer-text {
+            background: linear-gradient(90deg, #fff 0%, #3b82f6 50%, #fff 100%);
+            -webkit-background-clip: text;
+            background-size: 200% auto;
+        }
 
         @keyframes shimmer {
             to { background-position: 200% center; }
@@ -175,6 +225,7 @@
 
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #3f3f46; }
 
         .reveal {
             animation: reveal-up 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -196,6 +247,9 @@
           background: #e2e8f0;
           border-radius: 10px;
         }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #27272a;
+        }
     </style>
     <script type="importmap">
 {
@@ -211,7 +265,7 @@
 }
 </script>
 </head>
-<body class="grain overflow-x-hidden w-full">
+<body class="grain overflow-x-hidden w-full transition-colors duration-500">
     <div id="root"></div>
     <script type="module" src="index.tsx"></script>
 </body>
