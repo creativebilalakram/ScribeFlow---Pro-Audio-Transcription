@@ -3,12 +3,20 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
 // Helper to get AI instance safely
 const getAI = () => {
-  // Use a variety of ways to find the API Key to avoid 'process undefined' issues
-  const apiKey = (window as any).process?.env?.API_KEY || (process as any)?.env?.API_KEY;
+  // Try multiple ways to find the API Key
+  let apiKey = "";
   
-  if (!apiKey || apiKey === "") {
-    throw new Error("API_KEY_MISSING: Please configure the API_KEY in Vercel settings and redeploy.");
+  try {
+    apiKey = (window as any).process?.env?.API_KEY || (process as any)?.env?.API_KEY || "";
+  } catch (e) {
+    apiKey = "";
   }
+  
+  if (!apiKey || apiKey.length < 5) {
+    console.error("AI_INITIALIZATION_FAILED: API_KEY is missing from environment.");
+    throw new Error("SYSTEM_ERROR: API Key not found. Please add 'API_KEY' to Vercel Environment Variables and redeploy.");
+  }
+
   return new GoogleGenAI({ apiKey });
 };
 
@@ -19,7 +27,7 @@ export const transcribeAudio = async (
 ): Promise<string> => {
   try {
     const ai = getAI();
-    if (onProgress) onProgress("Initializing advanced AI engine...");
+    if (onProgress) onProgress("Waking neural clusters...");
 
     const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-pro-preview',
@@ -32,16 +40,7 @@ export const transcribeAudio = async (
             },
           },
           {
-            text: `You are a world-class professional transcriptionist. 
-            
-            Task: Provide a high-fidelity, verbatim-accurate transcription of the provided audio.
-            
-            Quality Standards:
-            1. WORD-FOR-WORD ACCURACY: Ensure every spoken word is captured correctly.
-            2. INTELLIGENT CLEANUP: Clean verbatim. Remove filler words (um, uh) and false starts.
-            3. LOGICAL FORMATTING: Organize into paragraphs.
-            
-            Constraint: Output ONLY the final transcribed text.`
+            text: `You are a world-class professional transcriptionist. Provide a high-fidelity, verbatim-accurate transcription. Remove filler words. Logical formatting only.`
           }
         ]
       },
@@ -52,12 +51,12 @@ export const transcribeAudio = async (
     });
 
     const text = response.text;
-    if (!text) throw new Error("No transcription was generated.");
+    if (!text) throw new Error("TRANSCRIPTION_EMPTY: No text returned from model.");
     
     return text.trim();
   } catch (error: any) {
-    console.error("Transcription error:", error);
-    throw new Error(error.message || "Failed to transcribe audio.");
+    console.error("Transcription Process Error:", error);
+    throw new Error(error.message || "Neural processing failed. Please check network connection.");
   }
 };
 
@@ -68,28 +67,14 @@ export const translateText = async (
 ): Promise<string> => {
   try {
     const ai = getAI();
-    if (onProgress) onProgress(`Synthesizing ${targetLanguage} translation...`);
+    if (onProgress) onProgress(`Translating to ${targetLanguage}...`);
 
     const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-pro-preview',
       contents: {
         parts: [
           {
-            text: `You are a professional polyglot translator. 
-            
-            Task: Translate the following text into ${targetLanguage}.
-            
-            Standards:
-            1. FLUENCY: Ensure the translation sounds natural and professional in ${targetLanguage}.
-            2. CONTEXT: Maintain the original tone and nuances of the speaker.
-            3. FORMATTING: Preserve the paragraph structure and line breaks.
-            
-            Original Text:
-            """
-            ${text}
-            """
-            
-            Output ONLY the ${targetLanguage} translation.`
+            text: `Translate the following text into ${targetLanguage}. Output ONLY the translation.\n\nText: ${text}`
           }
         ]
       },
@@ -100,7 +85,7 @@ export const translateText = async (
     });
 
     const translated = response.text;
-    if (!translated) throw new Error("Translation failed.");
+    if (!translated) throw new Error("TRANSLATION_EMPTY: Logic core returned null.");
     
     return translated.trim();
   } catch (error: any) {

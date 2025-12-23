@@ -1,25 +1,21 @@
 
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 
-console.log("ScribeFlow Core: Starting initialization...");
+console.log("ScribeFlow Core: Mounting application...");
 
-const rootElement = document.getElementById('root');
-if (!rootElement) {
-  console.error("Critical Error: Root element not found!");
-  throw new Error("Could not find root element to mount to");
+const container = document.getElementById('root');
+
+if (!container) {
+  throw new Error("Target container 'root' not found in document.");
 }
 
-try {
-  const root = ReactDOM.createRoot(rootElement);
-  root.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  );
-  console.log("ScribeFlow Core: Successfully mounted.");
-} catch (err) {
-  console.error("Initialization failed:", err);
-  rootElement.innerHTML = `<div style="padding: 20px; color: red;">Mount Error: ${err.message}</div>`;
-}
+const root = createRoot(container);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+console.log("ScribeFlow Core: Active.");
