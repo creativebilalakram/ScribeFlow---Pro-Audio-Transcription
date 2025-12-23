@@ -1,14 +1,8 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
-// We'll initialize the AI client inside the functions to ensure process.env is available
-let aiClient: GoogleGenAI | null = null;
-
 const getAIClient = () => {
-  if (!aiClient) {
-    const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : '';
-    aiClient = new GoogleGenAI({ apiKey: apiKey || '' });
-  }
-  return aiClient;
+  const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : '';
+  return new GoogleGenAI({ apiKey: apiKey || '' });
 };
 
 export const transcribeAudio = async (
