@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Component } from 'react';
 import Header from './components/Header';
 import RecordingInterface from './components/RecordingInterface';
 import TranscriptionPanel from './components/TranscriptionPanel';
@@ -14,13 +14,12 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-// Fixed ErrorBoundary class to correctly inherit and recognize props and state
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  // Explicitly initialize state as a class field to ensure proper typing of 'this.state'
-  public state: ErrorBoundaryState = { hasError: false };
-
+// Fix: Refined ErrorBoundary class to correctly inherit from Component with generics
+// and initialized state properly to resolve the 'props' property error.
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
+    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(_: any): ErrorBoundaryState {
@@ -33,7 +32,6 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   render() {
-    // Correctly accessing 'this.state' and 'this.props' which are now recognized by TS
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-zinc-50 p-6">

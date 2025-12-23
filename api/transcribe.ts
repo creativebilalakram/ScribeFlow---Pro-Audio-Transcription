@@ -48,15 +48,14 @@ export default async function handler(req: any, res: any) {
               4. TOTAL FAILURE: If the audio is completely inaudible, unintelligible, or mostly silence/noise, DO NOT attempt a transcription. Instead, output exactly: "Transcription failed. The audio quality is too low to process. Please retry with a clearer audio recording."
               5. FORMATTING: Use professional paragraph breaks. Ensure logical flow.
               6. CLEANUP: Remove filler words (um, uh) unless they provide critical context.
-              7. SPEAKER ID: If multiple speakers are clearly distinguishable, label them (e.g., Speaker 1, Speaker 2).
+              7. NO LABELS: Do NOT include labels like "Speaker 1:", "Speaker:", "Transcript:", or any introductory text. Provide ONLY the spoken words.
               
-              Output: ONLY the transcribed text or the failure message.`
+              Output: ONLY the transcribed text (without any speaker IDs) or the failure message.`
             }
           ]
         },
         config: {
           temperature: 0,
-          // thinkingConfig removed to allow model default behavior
         }
       });
 
