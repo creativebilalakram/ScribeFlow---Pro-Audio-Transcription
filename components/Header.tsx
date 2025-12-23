@@ -50,7 +50,7 @@ const Header: React.FC<Props> = ({ onLogoClick, theme, onToggleTheme }) => {
             rel="noopener noreferrer"
             className="text-[10px] sm:text-[12px] font-black bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-all shadow-xl shadow-zinc-200 dark:shadow-none active:scale-95 flex items-center gap-1.5 sm:gap-2"
           >
-            <span className="hidden xs:inline">Hire</span> Bilal
+            Contact
             <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </a>
         </div>

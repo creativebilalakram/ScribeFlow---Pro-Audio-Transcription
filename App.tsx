@@ -62,11 +62,12 @@ const AppContent: React.FC = () => {
   const [inputMode, setInputMode] = useState<'upload' | 'record'>('upload');
   const [error, setError] = useState<string | null>(null);
   
-  // Theme Management
+  // Theme Management - Defaulted to 'light' (white) as requested
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('scribeflow-theme');
     if (saved) return saved as 'light' | 'dark';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    // Default to light even if system is dark, to satisfy user request
+    return 'light';
   });
 
   useEffect(() => {
@@ -260,7 +261,7 @@ const AppContent: React.FC = () => {
                  <span className="w-0 h-[2px] bg-blue-600 transition-all duration-300 group-hover:w-full rounded-full" />
                </a>
                <a href="https://creativebilal.com/contact/" target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-1">
-                 <span className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-950 dark:group-hover:text-white uppercase tracking-[0.2em] transition-colors">Hire Bilal</span>
+                 <span className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-950 dark:group-hover:text-white uppercase tracking-[0.2em] transition-colors">Contact</span>
                  <span className="w-0 h-[2px] bg-blue-600 transition-all duration-300 group-hover:w-full rounded-full" />
                </a>
             </div>
