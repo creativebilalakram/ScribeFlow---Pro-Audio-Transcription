@@ -1,0 +1,7 @@
+{
+  "name": "ScribeFlow - Pro Audio Transcription",
+  "description": "A minimal, premium web application for fast and accurate audio transcription using Gemini AI. Supports direct recording and file uploads with a Notion-style interface.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
