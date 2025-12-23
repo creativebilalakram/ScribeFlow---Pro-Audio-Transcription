@@ -1,7 +1,7 @@
-
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : '';
+const ai = new GoogleGenAI({ apiKey: apiKey || '' });
 
 export const transcribeAudio = async (
   base64Audio: string, 
@@ -83,7 +83,7 @@ export const translateText = async (
         ]
       },
       config: {
-        temperature: 0.1, // Slight creativity for natural phrasing
+        temperature: 0.1,
         thinkingConfig: { thinkingBudget: 2000 }
       }
     });
