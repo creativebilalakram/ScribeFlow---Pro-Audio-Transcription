@@ -88,7 +88,6 @@ const TranscriptionPanel: React.FC<Props> = ({ result, onClose }) => {
 
         {/* Action Buttons Group */}
         <div className="flex flex-wrap items-center gap-2 sm:gap-3 relative">
-          {/* Neural Translate Dropdown */}
           <div className="relative flex-1 min-w-[100px] sm:flex-none" ref={menuRef}>
             <button 
               onClick={() => setShowLangMenu(!showLangMenu)}
@@ -100,88 +99,75 @@ const TranscriptionPanel: React.FC<Props> = ({ result, onClose }) => {
               </svg>
               <span>{isTranslating ? 'Wait...' : 'Translate'}</span>
             </button>
-            
-            {/* Smooth Swish Dropdown Container */}
-            <div 
-              className={`absolute top-full left-0 mt-3 w-44 sm:w-48 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-2xl shadow-[0_25px_60px_rgba(0,0,0,0.12)] dark:shadow-none z-[100] p-1.5 origin-top-left transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-                showLangMenu 
-                  ? 'opacity-100 scale-100 translate-y-0 visible' 
-                  : 'opacity-0 scale-90 -translate-y-4 invisible pointer-events-none'
-              }`}
-            >
+            <div className={`absolute top-full left-0 mt-3 w-44 sm:w-48 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-2xl shadow-[0_25px_60px_rgba(0,0,0,0.12)] dark:shadow-none z-[100] p-1.5 origin-top-left transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${showLangMenu ? 'opacity-100 scale-100 translate-y-0 visible' : 'opacity-0 scale-90 -translate-y-4 invisible pointer-events-none'}`}>
               <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
                 {LANGUAGES.map((lang) => (
-                  <button
-                    key={lang}
-                    onClick={() => handleTranslate(lang)}
-                    className="w-full text-left px-4 py-2.5 text-[10px] sm:text-[11px] font-black text-zinc-600 dark:text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 rounded-xl transition-all uppercase tracking-widest"
-                  >
-                    {lang}
-                  </button>
+                  <button key={lang} onClick={() => handleTranslate(lang)} className="w-full text-left px-4 py-2.5 text-[10px] sm:text-[11px] font-black text-zinc-600 dark:text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 rounded-xl transition-all uppercase tracking-widest">{lang}</button>
                 ))}
               </div>
             </div>
           </div>
 
-          <button 
-            onClick={handleCopy}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 sm:px-5 py-3 sm:py-3.5 bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-950 dark:text-white text-[9px] sm:text-[12px] font-black uppercase tracking-wider rounded-xl sm:rounded-2xl transition-all border border-zinc-100 dark:border-zinc-700 active:scale-95 whitespace-nowrap"
-          >
-            {copyStatus === 'Copied!' ? (
-              <svg className="w-3.5 h-3.5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
-            ) : (
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-            )}
+          <button onClick={handleCopy} className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 sm:px-5 py-3 sm:py-3.5 bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-950 dark:text-white text-[9px] sm:text-[12px] font-black uppercase tracking-wider rounded-xl sm:rounded-2xl transition-all border border-zinc-100 dark:border-zinc-700 active:scale-95 whitespace-nowrap">
+            {copyStatus === 'Copied!' ? (<svg className="w-3.5 h-3.5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>) : (<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>)}
             {copyStatus}
           </button>
-          
-          <button 
-            onClick={handleDownload}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 sm:px-5 py-3 sm:py-3.5 bg-blue-600 hover:bg-blue-700 text-white text-[9px] sm:text-[12px] font-black uppercase tracking-wider rounded-xl sm:rounded-2xl transition-all shadow-xl shadow-blue-100 dark:shadow-none active:scale-95 whitespace-nowrap"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-            Export
+          <button onClick={handleDownload} className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 sm:px-5 py-3 sm:py-3.5 bg-blue-600 hover:bg-blue-700 text-white text-[9px] sm:text-[12px] font-black uppercase tracking-wider rounded-xl sm:rounded-2xl transition-all shadow-xl shadow-blue-100 dark:shadow-none active:scale-95 whitespace-nowrap">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg> Export
           </button>
         </div>
       </div>
 
-      {/* Main Text Content */}
-      <div className={`premium-container group ${isTranslating ? 'active animate-pulse border-blue-200' : 'active'}`}>
-        <div className="inner-content p-1 sm:p-2 bg-zinc-50/30 dark:bg-zinc-950/30 relative">
-          <textarea
-            value={editableText}
-            onChange={(e) => setEditableText(e.target.value)}
-            spellCheck={false}
-            disabled={isTranslating}
-            className={`w-full h-[450px] sm:h-[600px] p-5 sm:p-12 pb-20 sm:pb-24 bg-white dark:bg-zinc-900 rounded-[28px] sm:rounded-[44px] text-zinc-800 dark:text-zinc-100 text-sm sm:text-lg leading-relaxed sm:leading-loose font-medium focus:outline-none resize-none border-none shadow-inner transition-all ${isTranslating ? 'opacity-40' : 'opacity-100'}`}
-            placeholder="No sequence data found..."
-          />
+      {/* Main Text Content Box */}
+      <div className={`premium-container group overflow-hidden ${isTranslating ? 'active animate-pulse border-blue-200' : 'active'}`}>
+        <div className="inner-content bg-zinc-50/30 dark:bg-zinc-950/30 flex flex-col">
+          {/* Content Area */}
+          <div className="relative flex-1 p-1 sm:p-2">
+            <textarea
+              value={editableText}
+              onChange={(e) => setEditableText(e.target.value)}
+              spellCheck={false}
+              disabled={isTranslating}
+              className={`w-full h-[400px] sm:h-[550px] p-5 sm:p-12 pb-16 sm:pb-20 bg-white dark:bg-zinc-900 rounded-[28px] sm:rounded-[44px] text-zinc-800 dark:text-zinc-100 text-sm sm:text-lg leading-relaxed sm:leading-loose font-medium focus:outline-none resize-none border-none shadow-inner transition-all ${isTranslating ? 'opacity-40' : 'opacity-100'}`}
+              placeholder="Decoding neural stream..."
+            />
+            {isTranslating && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+                 <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4" />
+                 <p className="text-zinc-950 dark:text-white font-black text-[11px] uppercase tracking-widest">{translationStatus}</p>
+              </div>
+            )}
+          </div>
           
-          {/* Internal Accuracy Disclaimer - Now Center Bottom Inside */}
-          {!isTranslating && (
-            <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 w-full max-w-[90%] text-center pointer-events-none">
-              <p className="text-[7px] sm:text-[9px] text-zinc-300 dark:text-zinc-600 font-medium tracking-wider uppercase opacity-80">
-                ScribeFlow is a high-fidelity AI system; results may contain inaccuracies, please verify critical information.
-              </p>
-            </div>
-          )}
-
-          {isTranslating && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-               <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4" />
-               <p className="text-zinc-950 dark:text-white font-black text-[11px] uppercase tracking-widest">{translationStatus}</p>
-            </div>
-          )}
+          {/* Internal Attached Glassy Disclaimer Bar */}
+          <div className="w-full bg-white/60 dark:bg-zinc-900/60 backdrop-blur-md border-t border-zinc-100/50 dark:border-zinc-800/50 px-4 py-3 sm:py-4 rounded-t-[20px] sm:rounded-t-[30px] rounded-b-none flex items-center justify-center text-center z-20">
+             <div className="flex items-center gap-2">
+                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-blue-600 dark:text-blue-400 opacity-60" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+                <p className="text-[7.5px] sm:text-[10px] text-zinc-500 dark:text-zinc-400 font-bold tracking-wider uppercase">
+                   ScribeFlow is a high-fidelity AI system; results may contain inaccuracies, please verify critical information.
+                </p>
+             </div>
+          </div>
         </div>
       </div>
 
       {/* Footer / Reset Action */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-4 px-4 sm:px-0">
-        <div className="flex flex-col gap-1">
-           <div className="text-[11px] sm:text-[13px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.25em]">
-             Say Thanks to Bilal
-           </div>
-           <div className="w-12 h-1 bg-blue-600/20 rounded-full" />
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-4">
+        {/* Professional Credit Badge */}
+        <div className="group flex items-center gap-3 px-5 py-2.5 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
+          <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-none">
+             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+             </svg>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] sm:text-[11px] font-black text-zinc-950 dark:text-white uppercase tracking-[0.2em]">Say Thanks to Bilal</span>
+            <div className="h-[2px] w-full bg-blue-600/10 dark:bg-blue-400/10 rounded-full mt-0.5 overflow-hidden">
+               <div className="h-full w-2/3 bg-blue-600 transition-all group-hover:w-full" />
+            </div>
+          </div>
         </div>
         
         <button 
