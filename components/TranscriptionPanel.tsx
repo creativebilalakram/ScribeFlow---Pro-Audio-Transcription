@@ -147,15 +147,25 @@ const TranscriptionPanel: React.FC<Props> = ({ result, onClose }) => {
 
       {/* Main Text Content */}
       <div className={`premium-container group ${isTranslating ? 'active animate-pulse border-blue-200' : 'active'}`}>
-        <div className="inner-content p-1 sm:p-2 bg-zinc-50/30 dark:bg-zinc-950/30">
+        <div className="inner-content p-1 sm:p-2 bg-zinc-50/30 dark:bg-zinc-950/30 relative">
           <textarea
             value={editableText}
             onChange={(e) => setEditableText(e.target.value)}
             spellCheck={false}
             disabled={isTranslating}
-            className={`w-full h-[450px] sm:h-[600px] p-5 sm:p-12 bg-white dark:bg-zinc-900 rounded-[28px] sm:rounded-[44px] text-zinc-800 dark:text-zinc-100 text-sm sm:text-lg leading-relaxed sm:leading-loose font-medium focus:outline-none resize-none border-none shadow-inner transition-all ${isTranslating ? 'opacity-40' : 'opacity-100'}`}
+            className={`w-full h-[450px] sm:h-[600px] p-5 sm:p-12 pb-20 sm:pb-24 bg-white dark:bg-zinc-900 rounded-[28px] sm:rounded-[44px] text-zinc-800 dark:text-zinc-100 text-sm sm:text-lg leading-relaxed sm:leading-loose font-medium focus:outline-none resize-none border-none shadow-inner transition-all ${isTranslating ? 'opacity-40' : 'opacity-100'}`}
             placeholder="No sequence data found..."
           />
+          
+          {/* Internal Accuracy Disclaimer - Now Center Bottom Inside */}
+          {!isTranslating && (
+            <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 w-full max-w-[90%] text-center pointer-events-none">
+              <p className="text-[7px] sm:text-[9px] text-zinc-300 dark:text-zinc-600 font-medium tracking-wider uppercase opacity-80">
+                ScribeFlow is a high-fidelity AI system; results may contain inaccuracies, please verify critical information.
+              </p>
+            </div>
+          )}
+
           {isTranslating && (
             <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
                <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4" />
@@ -166,24 +176,12 @@ const TranscriptionPanel: React.FC<Props> = ({ result, onClose }) => {
       </div>
 
       {/* Footer / Reset Action */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-4">
-        <div className="flex flex-col gap-3">
-           <div className="flex items-center gap-3">
-              <div className="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-black rounded-full uppercase tracking-widest border border-blue-100 dark:border-blue-900/50">
-                High Fidelity AI Output
-              </div>
-              <p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-bold uppercase tracking-wider hidden sm:block">Verified by ScribeFlow Core</p>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-4 px-4 sm:px-0">
+        <div className="flex flex-col gap-1">
+           <div className="text-[11px] sm:text-[13px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.25em]">
+             Say Thanks to Bilal
            </div>
-           
-           {/* Accuracy Disclaimer */}
-           <div className="flex items-center gap-2 max-w-lg">
-             <svg className="w-3 h-3 text-zinc-300 dark:text-zinc-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-             </svg>
-             <p className="text-[9px] text-zinc-400 dark:text-zinc-500 font-medium leading-tight tracking-wide italic">
-               ScribeFlow Intelligence is a high-fidelity AI system. While engineered for precision, it may occasionally produce inaccuracies. Please verify critical information.
-             </p>
-           </div>
+           <div className="w-12 h-1 bg-blue-600/20 rounded-full" />
         </div>
         
         <button 
