@@ -15,13 +15,17 @@ interface ErrorBoundaryState {
 }
 
 // Fixed ErrorBoundary by ensuring it correctly extends Component with props and state types
-// and explicitly defining the state member for type safety.
+// and explicitly defining the state and props members for type safety in this environment.
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  // Explicitly define state property to resolve "Property 'state' does not exist" errors
+  // Explicitly define props and state properties to resolve "Property 'props/state' does not exist" errors
+  // which can occur in certain strict or idiosyncratic TypeScript environments.
+  public props: ErrorBoundaryProps;
   public state: ErrorBoundaryState = { hasError: false };
 
   constructor(props: ErrorBoundaryProps) {
     super(props);
+    // Explicit assignment to ensure property existence in the instance
+    this.props = props;
   }
 
   static getDerivedStateFromError(_: any): ErrorBoundaryState {
@@ -55,7 +59,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
         </div>
       );
     }
-    // Accessing props.children which is inherited from the Component base class
+    // Accessing props.children which is now explicitly defined on the class to avoid "Property 'props' does not exist" errors
     return this.props.children;
   }
 }

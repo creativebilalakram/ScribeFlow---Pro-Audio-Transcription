@@ -166,16 +166,23 @@ const TranscriptionPanel: React.FC<Props> = ({ result, onClose }) => {
       </div>
 
       {/* Footer / Reset Action */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-4">
-        <div className="flex items-center gap-3">
-           <div className="hidden sm:flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-4">
+        <div className="flex flex-col gap-3">
+           <div className="flex items-center gap-3">
               <div className="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-black rounded-full uppercase tracking-widest border border-blue-100 dark:border-blue-900/50">
                 High Fidelity AI Output
               </div>
-              <p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-bold uppercase tracking-wider">Verified by ScribeFlow Core</p>
+              <p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-bold uppercase tracking-wider hidden sm:block">Verified by ScribeFlow Core</p>
            </div>
-           <div className="flex sm:hidden items-center">
-             <p className="text-[10px] text-blue-600 dark:text-blue-400 font-black uppercase tracking-[0.2em]">ScribeFlow Verified Core</p>
+           
+           {/* Accuracy Disclaimer */}
+           <div className="flex items-center gap-2 max-w-lg">
+             <svg className="w-3 h-3 text-zinc-300 dark:text-zinc-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+             </svg>
+             <p className="text-[9px] text-zinc-400 dark:text-zinc-500 font-medium leading-tight tracking-wide italic">
+               ScribeFlow Intelligence is a high-fidelity AI system. While engineered for precision, it may occasionally produce inaccuracies. Please verify critical information.
+             </p>
            </div>
         </div>
         
