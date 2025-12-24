@@ -14,10 +14,14 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
+// Fixed ErrorBoundary by ensuring it correctly extends Component with props and state types
+// and explicitly defining the state member for type safety.
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  // Explicitly define state property to resolve "Property 'state' does not exist" errors
+  public state: ErrorBoundaryState = { hasError: false };
+
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(_: any): ErrorBoundaryState {
@@ -29,6 +33,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   render() {
+    // Accessing state property which is now explicitly defined on the class
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 p-6 transition-colors duration-500">
@@ -50,6 +55,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
         </div>
       );
     }
+    // Accessing props.children which is inherited from the Component base class
     return this.props.children;
   }
 }

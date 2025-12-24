@@ -1,11 +1,20 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-const MODELS_PRIORITY = [
+const MODELS_POOL = [
   'gemini-3-pro-preview',
   'gemini-3-flash-preview',
   'gemini-flash-lite-latest'
 ];
+
+function shufflePool(array: string[]) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
@@ -18,12 +27,12 @@ export default async function handler(req: any, res: any) {
     return res.status(400).json({ error: 'Missing text or target language' });
   }
 
+  const rotatedModels = shufflePool(MODELS_POOL);
   let lastError = null;
 
-  for (const modelName of MODELS_PRIORITY) {
+  for (const modelName of rotatedModels) {
     try {
-      console.log(`ScribeFlow: Attempting translation with ${modelName}`);
-      // Initializing AI with apiKey directly from process.env.API_KEY
+      console.log(`ScribeFlow: Translating via ${modelName}`);
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
       const response = await ai.models.generateContent({
@@ -31,14 +40,7 @@ export default async function handler(req: any, res: any) {
         contents: {
           parts: [
             {
-              text: `You are a professional polyglot translator. 
-              
-              Task: Translate the following text into ${targetLanguage}.
-              
-              Standards:
-              1. FLUENCY: Native-level professional tone.
-              2. FIDELITY: Maintain 100% of the original meaning and nuance.
-              3. STRUCTURE: Preserve all paragraph breaks.
+              text: `Translate the following text into ${targetLanguage}. Maintain professional tone and preserve paragraph structure.
               
               Text:
               """
@@ -51,30 +53,30 @@ export default async function handler(req: any, res: any) {
         },
         config: {
           temperature: 0.1,
-          // thinkingConfig removed to allow model default behavior
         }
       });
 
       const translated = response.text;
       if (translated) {
-        console.log(`ScribeFlow: Successfully translated using ${modelName}`);
+        console.log(`ScribeFlow: Translation success with ${modelName}`);
         return res.status(200).json({ translated: translated.trim(), modelUsed: modelName });
       }
     } catch (error: any) {
       lastError = error;
       const errorMessage = error.message?.toLowerCase() || "";
       
-      if (errorMessage.includes("429") || errorMessage.includes("quota") || errorMessage.includes("limit")) {
-        console.warn(`ScribeFlow: Model ${modelName} hit quota limit. Falling back...`);
+      if (errorMessage.includes("429") || errorMessage.includes("quota") || errorMessage.includes("limit") || errorMessage.includes("exhausted")) {
+        console.warn(`ScribeFlow: Translation quota hit for ${modelName}. Rotating...`);
         continue;
       }
       
-      console.error(`ScribeFlow: Translation model ${modelName} failed:`, error.message);
+      console.error(`ScribeFlow: Translation error with ${modelName}:`, error.message);
     }
   }
 
   return res.status(500).json({ 
-    error: lastError?.message || 'Neural translation cluster unavailable.',
-    details: 'Exhausted all available models in the priority sequence.'
+    error: 'Translation neural cluster limit reached.',
+    details: 'Please retry in a few seconds.',
+    raw: lastError?.message
   });
 }
