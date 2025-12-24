@@ -14,17 +14,12 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-// Fixed ErrorBoundary by ensuring it correctly extends Component with props and state types
-// and explicitly defining the state and props members for type safety in this environment.
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  // Explicitly define props and state properties to resolve "Property 'props/state' does not exist" errors
-  // which can occur in certain strict or idiosyncratic TypeScript environments.
   public props: ErrorBoundaryProps;
   public state: ErrorBoundaryState = { hasError: false };
 
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    // Explicit assignment to ensure property existence in the instance
     this.props = props;
   }
 
@@ -37,7 +32,6 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   render() {
-    // Accessing state property which is now explicitly defined on the class
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 p-6 transition-colors duration-500">
@@ -59,7 +53,6 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
         </div>
       );
     }
-    // Accessing props.children which is now explicitly defined on the class to avoid "Property 'props' does not exist" errors
     return this.props.children;
   }
 }
@@ -72,11 +65,9 @@ const AppContent: React.FC = () => {
   const [inputMode, setInputMode] = useState<'upload' | 'record'>('upload');
   const [error, setError] = useState<string | null>(null);
   
-  // Theme Management - Defaulted to 'light' (white) as requested
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('scribeflow-theme');
     if (saved) return saved as 'light' | 'dark';
-    // Default to light even if system is dark, to satisfy user request
     return 'light';
   });
 
@@ -127,8 +118,9 @@ const AppContent: React.FC = () => {
         setError("Invalid data format. Standard audio required.");
         return;
       }
-      if (file.size > 100 * 1024 * 1024) {
-        setError("File exceeds 100MB limit.");
+      // Updated limit from 100MB to 2MB
+      if (file.size > 2 * 1024 * 1024) {
+        setError("File exceeds 2MB limit for free tier processing.");
         return;
       }
       processAudio(file, file.name);
@@ -193,7 +185,7 @@ const AppContent: React.FC = () => {
                       </div>
                       <div className="space-y-2">
                         <p className="text-xl sm:text-2xl font-black text-zinc-950 dark:text-white tracking-tight">Initialize Sequence</p>
-                        <p className="text-[8px] sm:text-[11px] text-zinc-400 dark:text-zinc-500 font-bold uppercase tracking-[0.3em]">WAV, MP3, WEBM (100MB)</p>
+                        <p className="text-[8px] sm:text-[11px] text-zinc-400 dark:text-zinc-500 font-bold uppercase tracking-[0.3em]">WAV, MP3, WEBM (2MB LIMIT)</p>
                       </div>
                     </div>
                   </label>

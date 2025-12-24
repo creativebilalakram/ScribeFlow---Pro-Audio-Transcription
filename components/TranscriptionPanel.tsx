@@ -22,7 +22,6 @@ const TranscriptionPanel: React.FC<Props> = ({ result, onClose }) => {
   const [translationStatus, setTranslationStatus] = useState('');
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -86,7 +85,6 @@ const TranscriptionPanel: React.FC<Props> = ({ result, onClose }) => {
           </div>
         </div>
 
-        {/* Action Buttons Group */}
         <div className="flex flex-wrap items-center gap-2 sm:gap-3 relative">
           <div className="relative flex-1 min-w-[100px] sm:flex-none" ref={menuRef}>
             <button 
@@ -128,7 +126,7 @@ const TranscriptionPanel: React.FC<Props> = ({ result, onClose }) => {
               onChange={(e) => setEditableText(e.target.value)}
               spellCheck={false}
               disabled={isTranslating}
-              className={`w-full h-[400px] sm:h-[550px] p-5 sm:p-12 pb-16 sm:pb-20 bg-white dark:bg-zinc-900 rounded-[28px] sm:rounded-[44px] text-zinc-800 dark:text-zinc-100 text-sm sm:text-lg leading-relaxed sm:leading-loose font-medium focus:outline-none resize-none border-none shadow-inner transition-all ${isTranslating ? 'opacity-40' : 'opacity-100'}`}
+              className={`w-full h-[400px] sm:h-[550px] p-5 sm:p-12 pb-24 sm:pb-32 bg-white dark:bg-zinc-900 rounded-[28px] sm:rounded-[44px] text-zinc-800 dark:text-zinc-100 text-sm sm:text-lg leading-relaxed sm:leading-loose font-medium focus:outline-none resize-none border-none shadow-inner transition-all ${isTranslating ? 'opacity-40' : 'opacity-100'}`}
               placeholder="Decoding neural stream..."
             />
             {isTranslating && (
@@ -139,15 +137,14 @@ const TranscriptionPanel: React.FC<Props> = ({ result, onClose }) => {
             )}
           </div>
           
-          {/* Internal Attached Glassy Disclaimer Bar */}
-          <div className="w-full bg-white/60 dark:bg-zinc-900/60 backdrop-blur-md border-t border-zinc-100/50 dark:border-zinc-800/50 px-4 py-3 sm:py-4 rounded-t-[20px] sm:rounded-t-[30px] rounded-b-none flex items-center justify-center text-center z-20">
-             <div className="flex items-center gap-2">
-                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-blue-600 dark:text-blue-400 opacity-60" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-                <p className="text-[7.5px] sm:text-[10px] text-zinc-500 dark:text-zinc-400 font-bold tracking-wider uppercase">
+          {/* Internal Attached Glassy Disclaimer Bar - High Fidelity Version */}
+          <div className="w-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-[24px] border-t border-zinc-100 dark:border-zinc-800 px-6 py-4 sm:py-5 rounded-t-[32px] sm:rounded-t-[48px] rounded-b-none flex items-center justify-center text-center z-20 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)]">
+             <div className="flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
+                <p className="text-[8px] sm:text-[11px] text-zinc-600 dark:text-zinc-300 font-black tracking-[0.08em] uppercase leading-tight">
                    ScribeFlow is a high-fidelity AI system; results may contain inaccuracies, please verify critical information.
                 </p>
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
              </div>
           </div>
         </div>
@@ -155,18 +152,17 @@ const TranscriptionPanel: React.FC<Props> = ({ result, onClose }) => {
 
       {/* Footer / Reset Action */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-4">
-        {/* Professional Credit Badge */}
-        <div className="group flex items-center gap-3 px-5 py-2.5 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
-          <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-none">
-             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        {/* Elite Credit Badge - Redesigned for Pro Feel */}
+        <div className="group relative flex items-center gap-4 px-6 py-3.5 bg-white dark:bg-zinc-900 rounded-[24px] border border-zinc-100 dark:border-zinc-800 shadow-xl shadow-zinc-200/40 dark:shadow-none hover:-translate-y-1 transition-all duration-500 overflow-hidden">
+          <div className="absolute inset-0 bg-blue-600/5 dark:bg-blue-400/5 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-700" />
+          <div className="w-8 h-8 bg-zinc-950 dark:bg-white rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:rotate-[360deg] duration-1000">
+             <svg className="w-4 h-4 text-white dark:text-zinc-950" fill="currentColor" viewBox="0 0 24 24">
+               <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
              </svg>
           </div>
-          <div className="flex flex-col">
-            <span className="text-[10px] sm:text-[11px] font-black text-zinc-950 dark:text-white uppercase tracking-[0.2em]">Say Thanks to Bilal</span>
-            <div className="h-[2px] w-full bg-blue-600/10 dark:bg-blue-400/10 rounded-full mt-0.5 overflow-hidden">
-               <div className="h-full w-2/3 bg-blue-600 transition-all group-hover:w-full" />
-            </div>
+          <div className="flex flex-col relative z-10">
+            <span className="text-[10px] sm:text-[12px] font-black text-zinc-950 dark:text-white uppercase tracking-[0.3em]">Say Thanks to Bilal</span>
+            <span className="text-[7px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.1em] opacity-60">Creative Bilal Agency • HQ</span>
           </div>
         </div>
         
